@@ -10,6 +10,9 @@
         .invalid-feedback {
             display: none; /* Por defecto, ocultamos el mensaje */
         }
+        .invalid-feedback-git {
+            display: none; /* Por defecto, ocultamos el mensaje */
+        }
 
         .mostrar {
             display: block !important; /* Mostramos el mensaje si la clase mostrar está presente */
@@ -28,6 +31,7 @@
         </select>
         <div class="form-group mb-3">
             <input type="url" id="github_url" class="form-control" placeholder="URL Github">
+            <div id="invalid-feedback-div-git" class="invalid-feedback-git" style="display: none;">Admin user not present in organization</div>
         </div>
         <div class="form-group mb-3">
             <input type="url" id="url_taiga" class="form-control"  placeholder="URL Taiga" aria-describedby="button-addon2">

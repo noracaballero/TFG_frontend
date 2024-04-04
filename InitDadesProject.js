@@ -2,8 +2,8 @@
 const subjectt = document.getElementById("subject");
 const selectedOptionValue = subjectt.value;
 
-document.getElementById("config").addEventListener('click',function (event){
 
+document.getElementById("config").addEventListener('click',function (event){
 
     const name = document.getElementById("name").value;
     const URLgithub = document.getElementById("github_url").value;
@@ -11,7 +11,8 @@ document.getElementById("config").addEventListener('click',function (event){
     const url_sheets = document.getElementById("url_sheets").value;
 
     const taiga = getValidationTaiga(url_taiga);
-
+    const github = getValidationGithub(URLgithub);
+    console.log(github);
 
     var formData = new FormData();
     formData.append('name', name);
@@ -107,19 +108,15 @@ function add(){
     var output = document.getElementById("taula_body");
     output.innerHTML += "<tr><td>"+name+"</td><td>"+github+"</td><td>"+taiga+"</td><td>"+sheets+"</td></tr>"
 }
-
+//Validació que el taiga es públic
 function getValidationTaiga(url_taig){
-    // Definir el enlace del proyecto en Taiga
+
     const projectLink = url_taig
     let id_project;
-
-// Dividir la URL en partes usando "/" como delimitador
     const parts = projectLink.split('/');
 
-// Encontrar el índice de "projects" en la URL
     const projectsIndex = parts.indexOf('project');
 
-// Si se encuentra "projects" en la URL, obtener el siguiente elemento como el ID del proyecto
     if (projectsIndex !== -1 && projectsIndex + 1 < parts.length) {
         const projectID = parts[projectsIndex + 1];
         id_project=projectID;
@@ -149,44 +146,90 @@ function getValidationTaiga(url_taig){
                 label.classList.add('is-invalid');
                 messagetaiga.style.display = 'block';
                 return false;
-            } else {
-                // Manejar otros códigos de estado según sea necesario
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            // Manejar errores de conexión u otros errores de fetch
+
         });
 
 
 }
 
+
+
+function getNameGithub(url_g){
+    const projectLink = url_g;
+    let id_project;
+    const parts = projectLink.split('/');
+
+    const projectsIndex = parts.indexOf('github.com');
+
+    if (projectsIndex !== -1 && projectsIndex + 1 < parts.length) {
+        console.log(parts[projectsIndex + 1]);
+        return parts[projectsIndex + 1];
+    } else {
+        console.log('No se pudo extraer el ID del proyecto');
+    }
+}
+//Validació github
 function getValidationGithub(url_git){
-    // Definir el nombre de la organización y el nombre de usuario
-    const organizationName = 'nombre_de_la_organizacion';
-    const username = 'nombre_de_usuario';
 
-// Definir el token de acceso
-    const accessToken = 'TU_TOKEN_DE_ACCESO';
+    const orgsName = getNameGithub(url_git);
 
-// Realizar la solicitud GET a la API de GitHub
-    fetch(`https://api.github.com/orgs/${organizationName}/memberships/${username}`, {
+    console.log("weweweweew"+url_git);
+
+    const label = document.getElementById('github_url');
+    const messagetaiga = document.getElementById('invalid-feedback-div-git');
+
+    const url=new URL("http://localhost:8092/subject");
+    url.searchParams.append('name',selectedOptionValue);
+    console.log(url);
+    fetch(url, {
         method: 'GET',
-        headers: {
-            'Authorization': `token ${accessToken}`
-        }
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error al obtener los datos de la membresía');
+                throw new Error("Error sending form");
             }
-            return response.json();
+            // Devolver la promesa de response.text() para manejarla en el siguiente then
+            return response.text();
         })
-        .then(data => {
-            console.log('Tipo de membresía:', data.role); // El tipo de membresía está en el campo "role"
+        .then(token => {
+            fetch(`https://api.github.com/orgs/${orgsName}/members`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `token ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos de la membresía');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (Array.isArray(data) && data.length === 0) {
+                        label.classList.add('is-invalid');
+                        messagetaiga.style.display = 'block';
+                        console.log('La respuesta está vacía');
+                    } else {
+                        label.classList.remove('is-invalid');
+                        label.classList.add('is-valid');
+                        messagetaiga.style.display = 'none';
+                        console.log('La respuesta no está vacía');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('Hubo un error al enviar el formulario');
         });
 }
+
+
+
 
