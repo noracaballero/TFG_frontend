@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="">
+        <table>
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Github username</th>
+                <th scope="col">Taiga username</th>
+                <th scope="col">Sheets username</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>
+                    <input type="text" id="name_Student">
+                </th>
+                <th>
+                    <input type="text" id="github_username">
+                </th>
+                <th>
+                    <input type="text" id="taiga_username">
+                </th>
+                <th>
+                    <input type="text" id="sheets_username">
+                </th>
+            </tr>
+            </tbody>
+        </table>
+        <button id="afegir_student" type="button" onclick="add();" class="btn btn-primary">Add Student</button>
+        <div>
+            <table id="output" class="table table-hover">
+                <thead><td>Name</td><td>Github username</td><td>Taiga username</td><td>Sheets username</td></thead>
+                <tbody id="taula_body"></tbody>
+            </table>
+        </div>
+
+    </form>
+
+</body>
+</html>
