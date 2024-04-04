@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add project</title>
+    <link rel="stylesheet" href="public/bootstrap.min.css">
+    <script src="InitDadesProject.js" defer></script>
+
+    <style>
+        .invalid-feedback {
+            display: none; /* Por defecto, ocultamos el mensaje */
+        }
+
+        .mostrar {
+            display: block !important; /* Mostramos el mensaje si la clase mostrar está presente */
+        }
+    </style>
+
+</head>
+<body>
+    <form class="p-4">
+        <div class="form-group mb-3">
+            <input type="text" id="name" class="form-control" placeholder="Project name">
+        </div>
+        <select class="form-select mb-3" id="subject">
+            <option value="asw">asw</option>
+            <option value="amep">amep</option>
+        </select>
+        <div class="form-group mb-3">
+            <input type="url" id="github_url" class="form-control" placeholder="URL Github">
+        </div>
+        <div class="form-group mb-3">
+            <input type="url" id="url_taiga" class="form-control"  placeholder="URL Taiga" aria-describedby="button-addon2">
+            <div id="invalid-feedback-div" class="invalid-feedback" style="display: none;">Taiga Project is private</div>
+        </div>
+        <div class="form-group mb-3">
+            <input type="url" id="url_sheets" class="form-control" placeholder="URL Sheets">
+        </div>
+
+        <button id="config" type="button"  class="btn btn-primary">Configurar</button>
+
+
+
+    </form>
+
+
+</body>
+</html>
