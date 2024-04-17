@@ -6,7 +6,7 @@ let backendProcess;
 
 app.on('ready', () => {
     // Ruta al archivo de tu aplicación Java
-    const javaFilePath = 'C:\\Users\\norac\\Desktop\\automation\\build\\libs\\automation-0.0.1-SNAPSHOT.jar';
+    /*const javaFilePath = 'C:\\Users\\norac\\Desktop\\automation\\build\\libs\\automation-0.0.1-SNAPSHOT.jar';
 
     // Construye la ruta al directorio de la aplicación Java
     const javaDirectory = path.dirname(javaFilePath);
@@ -25,7 +25,7 @@ app.on('ready', () => {
     backendProcess.stderr.on('data', (data) => {
         console.error(`Backend stderr: ${data}`);
     });
-
+*/
     // Crear la ventana principal de tu aplicación Electron
     createWindow();
 });
@@ -42,13 +42,12 @@ function createWindow() {
         width: 800,
         height: 600
     });
+    win.loadFile('index.html');
 
-    win.loadFile('InitDadesProject.html');
-
-    win.on('closed', () => {
+    /*win.on('closed', () => {
         // Detener el proceso del backend cuando la ventana se cierre
         if (backendProcess) {
             backendProcess.kill();
         }
-    });
+    });*/
 }

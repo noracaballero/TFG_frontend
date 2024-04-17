@@ -1,9 +1,14 @@
 
-const subjectt = document.getElementById("subject");
-const selectedOptionValue = subjectt.value;
+//const subjectt = document.getElementById("subject");
+//const selectedOptionValue = subjectt.value;
 
+console.log("InitDadesProject.js loaded");
 
-document.getElementById("config").addEventListener('click',function (event){
+function getBAck(){
+    window.history.back();
+}
+
+document.getElementById("save-project").addEventListener('click',function (event){
 
     const name = document.getElementById("name").value;
     const URLgithub = document.getElementById("github_url").value;
@@ -20,12 +25,14 @@ document.getElementById("config").addEventListener('click',function (event){
     formData.append('URL_github', URLgithub);
     formData.append('URL_taiga', url_taiga);
     formData.append('URL_sheets', url_sheets);
+    formData.append("ID_github",getNameGithub(URLgithub));
+    formData.append("ID_taiga",getIDTaiga(url_taiga));
 
     for (const pair of formData.entries()) {
         console.log(pair[0] + ', ' + pair[1]);
     }
 
-    /*fetch("http://localhost:8092/projects", {
+    fetch("http://localhost:8092/projects", {
         method: 'POST',
         body: formData
     }).then(response => {
@@ -37,77 +44,26 @@ document.getElementById("config").addEventListener('click',function (event){
        }).catch(error => {
         console.error('Error:', error);
         alert('Hubo un error al enviar el formulario');
-    });*/
+    });
 
 });
 
-/*document.getElementById("afegir_student").addEventListener('click',function (event){
-    // Definir los valores de los parámetros name e id_project
+function getIDTaiga(url_taiga){
+    const projectLink = url_taiga
+    let id_project;
+    const parts = projectLink.split('/');
 
-// Construir la URL con los parámetros
-    const url = new URL("http://localhost:8092/projects");
-    url.searchParams.append('name',"alfa");
-    url.searchParams.append('subject', selectedOptionValue);
+    const projectsIndex = parts.indexOf('project');
 
-    fetch(url, {
-        method: 'GET',
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Error sending form");
-        }
-        console.log(response)
-        return response.text();
-    }).then(data => {
-        console.log(data);
-        const id_proj = parseInt(data);
-        console.log(id_proj);
-        alert('Formulario enviado exitosamente');
-    }).catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
-    });
-
-    const studentname = document.getElementById("name").value;
-    const subjectt = document.getElementById("projectid");
-    const selectedOptionValue = subjectt.value;
-    const url_github = document.getElementById("url_github").value;
-    const url_taiga = document.getElementById("url_taiga").value;
-    const url_sheets = document.getElementById("url_sheets").value;
-
-    var formData = new FormData();
-    formData.append(name, studentname);
-    formData.append(subject, selectedOptionValue);
-    formData.append(URL_github, url_github);
-    formData.append(URL_taiga, url_taiga);
-    formData.append(URL_sheets, url_sheets);
-
-    fetch("http://localhost:8092/projects", {
-        method: 'POST',
-        // No necesitas especificar 'mode: no-cors' al usar FormData
-        // No necesitas especificar Content-Type al usar FormData
-        body: formData
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Error sending form");
-        }
-        return response.json();
-    }).then(data => {
-        console.log(data);
-        alert('Formulario enviado exitosamente');
-    }).catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
-    });
-});*/
-
-function add(){
-    var name = document.getElementById("name_Student").value;
-    var github = document.getElementById("github_username").value;
-    var taiga = document.getElementById("taiga_username").value;
-    var sheets = document.getElementById("sheets_username").value;
-    var output = document.getElementById("taula_body");
-    output.innerHTML += "<tr><td>"+name+"</td><td>"+github+"</td><td>"+taiga+"</td><td>"+sheets+"</td></tr>"
+    if (projectsIndex !== -1 && projectsIndex + 1 < parts.length) {
+        const projectID = parts[projectsIndex + 1];
+        return projectID
+        console.log('ID del proyecto:', projectID);
+    } else {
+        console.log('No se pudo extraer el ID del proyecto');
+    }
 }
+
 //Validació que el taiga es públic
 function getValidationTaiga(url_taig){
 
@@ -155,9 +111,6 @@ function getValidationTaiga(url_taig){
 
 
 }
-
-
-
 function getNameGithub(url_g){
     const projectLink = url_g;
     let id_project;
