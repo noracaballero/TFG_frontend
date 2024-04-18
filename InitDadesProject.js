@@ -1,11 +1,12 @@
 
-//const subjectt = document.getElementById("subject");
-//const selectedOptionValue = subjectt.value;
+const subjectt = document.getElementById("subject");
+const selectedOptionValue = subjectt.value;
 
 console.log("InitDadesProject.js loaded");
 
 function getBAck(){
     window.history.back();
+
 }
 
 document.getElementById("save-project").addEventListener('click',function (event){
