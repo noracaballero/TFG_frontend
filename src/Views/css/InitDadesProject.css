@@ -1,0 +1,31 @@
+.my-custom-navbar{
+    background-color: #639BC1;
+}
+
+/*inside_button{
+    color: white;
+}*/
+
+.custom-button{
+    background-color: #2677A5;
+    color: white;
+}
+
+.custom-button:hover {
+    background-color: #2677A5; /* Cambiar el color de fondo al pasar el mouse */
+    color: white; /* Mantener el color del texto como blanco */
+}
+
+table {
+    padding: 20px;
+}
+.invalid-feedback {
+    display: none; /* Por defecto, ocultamos el mensaje */
+}
+.invalid-feedback-git {
+    display: none; /* Por defecto, ocultamos el mensaje */
+}
+
+.mostrar {
+    display: block !important; /* Mostramos el mensaje si la clase mostrar está presente */
+}

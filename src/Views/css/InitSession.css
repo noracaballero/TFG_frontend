@@ -1,0 +1,31 @@
+#username{
+    margin-bottom: 10px;
+    width: 250px;
+    height: 40px;
+}
+#password{
+    margin-bottom: 10px;
+}
+
+#form_login{
+    text-align: center;
+}
+
+#pantalla{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+#custom_background{
+    background-color: #639BC1;
+}
+
+#id_login{
+    background-color: #2677A5;
+}

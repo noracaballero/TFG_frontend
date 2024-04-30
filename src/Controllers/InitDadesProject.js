@@ -6,8 +6,10 @@ console.log("InitDadesProject.js loaded");
 
 function getBAck(){
     window.history.back();
-
 }
+let correct_github = false;
+let correct_taiga =false;
+
 
 document.getElementById("save-project").addEventListener('click',function (event){
 
@@ -16,9 +18,9 @@ document.getElementById("save-project").addEventListener('click',function (event
     const url_taiga = document.getElementById("url_taiga").value;
     const url_sheets = document.getElementById("url_sheets").value;
 
-    const taiga = getValidationTaiga(url_taiga);
-    const github = getValidationGithub(URLgithub);
-    console.log(github);
+    //const taiga = getValidationTaiga(url_taiga);
+    //const github = getValidationGithub(URLgithub);
+
 
     var formData = new FormData();
     formData.append('name', name);
@@ -26,27 +28,45 @@ document.getElementById("save-project").addEventListener('click',function (event
     formData.append('URL_github', URLgithub);
     formData.append('URL_taiga', url_taiga);
     formData.append('URL_sheets', url_sheets);
-    formData.append("ID_github",getNameGithub(URLgithub));
-    formData.append("ID_taiga",getIDTaiga(url_taiga));
 
-    for (const pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
+    console.log(formData);
+
+    if(correct_github && correct_taiga) {
+        for (const pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
+        fetch("http://localhost:8092/projects", {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            console.log(response)
+            if (!response.ok) {
+                throw new Error("Error sending form");
+            }
+            alert('Formulario enviado exitosamente');
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al enviar el formulario');
+        });
+    }
+    else{
+        alert("The configuration of Taiga or Github project is incorrect");
     }
 
-    fetch("http://localhost:8092/projects", {
-        method: 'POST',
-        body: formData
-    }).then(response => {
-        console.log(response)
-        if (!response.ok) {
-            throw new Error("Error sending form");
-        }
-        alert('Formulario enviado exitosamente');
-       }).catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
-    });
+});
+var Github_input = document.getElementById("github_url");
 
+Github_input.addEventListener('blur', function() {
+    // Llamar a la función que deseas ejecutar cuando el usuario ha terminado de escribir y ha salido del input
+    getValidationGithub(document.getElementById("github_url").value);
+});
+
+var Taiga_input = document.getElementById("url_taiga");
+
+Taiga_input.addEventListener('blur', function() {
+    // Llamar a la función que deseas ejecutar cuando el usuario ha terminado de escribir y ha salido del input
+    getValidationTaiga(document.getElementById("url_taiga").value);
 });
 
 function getIDTaiga(url_taiga){
@@ -97,11 +117,13 @@ function getValidationTaiga(url_taig){
                 label.classList.remove('is-invalid');
                 label.classList.add('is-valid');
                 messagetaiga.style.display = 'none';
+                correct_taiga=true;
                 return true;
 
             } else if (response.status === 401) {
                 label.classList.add('is-invalid');
                 messagetaiga.style.display = 'block';
+                correct_taiga=false;
                 return false;
             }
         })
@@ -157,6 +179,12 @@ function getValidationGithub(url_git){
                 }
             })
                 .then(response => {
+                    if (response.status === 404) {
+                        label.classList.add('is-invalid');
+                        messagetaiga.style.display = 'block';
+                        correct_github=false;
+                        //throw new Error('Error 404: Recurso no encontrado');
+                    }
                     if (!response.ok) {
                         throw new Error('Error al obtener los datos de la membresía');
                     }
@@ -166,11 +194,13 @@ function getValidationGithub(url_git){
                     if (Array.isArray(data) && data.length === 0) {
                         label.classList.add('is-invalid');
                         messagetaiga.style.display = 'block';
+                        correct_github=false;
                         console.log('La respuesta está vacía');
                     } else {
                         label.classList.remove('is-invalid');
                         label.classList.add('is-valid');
                         messagetaiga.style.display = 'none';
+                        correct_github=true;
                         console.log('La respuesta no está vacía');
                     }
                 })

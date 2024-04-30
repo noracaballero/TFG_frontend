@@ -1,8 +1,9 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow , Menu,MenuItem} = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 
 let backendProcess;
+
 
 app.on('ready', () => {
     // Ruta al archivo de tu aplicación Java
@@ -42,7 +43,7 @@ function createWindow() {
         width: 800,
         height: 600
     });
-    win.loadFile('index.html');
+    win.loadFile('src/Views/InitSession.html');
 
     /*win.on('closed', () => {
         // Detener el proceso del backend cuando la ventana se cierre

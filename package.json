@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "App",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,9 +10,25 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "dotenv-webpack": "^8.1.0",
     "electron": "^29.1.6"
   },
   "dependencies": {
     "bootstrap-icons": "^1.11.3"
+  },
+  "build": {
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "snap"
+      ],
+      "category": "Development"
+    }
   }
 }

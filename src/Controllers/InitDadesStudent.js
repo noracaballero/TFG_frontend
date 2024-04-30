@@ -3,6 +3,7 @@ const subjecto = document.getElementById("subject");
 
 const selectedOption = subjecto.value;
 console.log(selectedOption);
+let id_proj = -1;
 
 console.log("InitDadesStudent.js loaded");
 
@@ -44,34 +45,25 @@ function getValidationT(){
     fetch(url, {
         method: 'GET',
     })
-        .then(response => {
-
-        })
+        .then(response => response.json())
         .then(data => {
             console.log("sfdsfsf",data)
-            // Acceder al parámetro 'members' del objeto 'data'
-            if (data.hasOwnProperty('members')) {
-                // Obtener el array de miembros
-                const members = data.members;
+            console.log(data.members);
 
-                // Array para almacenar los nombres de usuario
-                const usernames = [];
+            data.members.forEach(member =>{
+                let ismember = document.getElementById("taiga_username").value;
+                if(member.username === ismember){
+                    inputTaiga.classList.remove('is-invalid')
+                    inputTaiga.classList.add('is-valid');
+                }
+                else{
+                    inputTaiga.classList.remove("is-valid")
+                    inputTaiga.classList.add('is-invalid')
+                }
+            })
 
-                // Recorrer el array de miembros y extraer los nombres de usuario
-                members.forEach(member => {
-                    // Verificar si la clave 'username' existe en el objeto 'member'
-                    if (member.hasOwnProperty('username')) {
-                        // Agregar el nombre de usuario al array 'usernames'
-                        usernames.push(member.username);
-                    }
-                });
 
-                // Hacer algo con los nombres de usuario, como imprimirlos en la consola
-                console.log('Nombres de usuario:', usernames);
-            } else {
-                console.log('No se encontraron miembros en el objeto JSON.');
-            }
-            // Hacer algo con los datos obtenidos
+
             console.log('Miembros:', members);
         })
         .then(members => {
@@ -159,18 +151,22 @@ function add(){
 }
 document.getElementById("afegir_student").addEventListener('click',function (event){
 
-    input.classList.remove('is-valid');
+    inputGithub.classList.remove('is-valid');
+    inputTaiga.classList.remove('is-valid');
+
     // Definir los valores de los parámetros name e id_project
 
 // Construir la URL con los parámetros
-    const url = new URL("http://localhost:8092/projects");
+    const url = new URL("http://localhost:8092/projects/id");
     url.searchParams.append('name',document.getElementById("name").value);
     url.searchParams.append('subject', selectedOption);
-    console.log(url)
+    console.log("holaaaa"+url);
+
 
     fetch(url, {
         method: 'GET',
     }).then(response => {
+        console.log("entra");
         if (!response.ok) {
             throw new Error("Error sending form");
         }
@@ -178,18 +174,42 @@ document.getElementById("afegir_student").addEventListener('click',function (eve
         return response.text();
     }).then(data => {
         console.log(data);
-        const id_proj = parseInt(data);
-        console.log(id_proj);
+        id_proj = parseInt(data);
+        console.log("PROYECTOOOOOOOOO \n"+id_proj);
+        var formData = new FormData();
+        formData.append('name', document.getElementById("name_Student").value);
+        formData.append('project',id_proj);
+        formData.append('username_github', document.getElementById("github_username").value);
+        formData.append('username_taiga', document.getElementById("taiga_username").value);
+        formData.append('username_sheets', document.getElementById("sheets_username").value);
+        fetch("http://localhost:8092/student", {
+            method: 'POST',
+            // No necesitas especificar 'mode: no-cors' al usar FormData
+            // No necesitas especificar Content-Type al usar FormData
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Error sending form");
+            }
+
+        }).then(data => {
+            console.log(data);
+            alert('Formulario enviado exitosamente');
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al enviar el formulario');
+        });
+        document.getElementById("name_Student").value = '';
+        document.getElementById("github_username").value = '';
+        document.getElementById("taiga_username").value = '';
+        document.getElementById("sheets_username").value = '';
+
     }).catch(error => {
         console.error('Error:', error);
         alert('Hubo un error al enviar el formulario');
     });
 
-    var formData = new FormData();
-    formData.append('name', document.getElementById("name_Student").value);
-    formData.append('username_github', document.getElementById("github_username").value);
-    formData.append('username_taiga', document.getElementById("taiga_username").value);
-    formData.append('username_sheets', document.getElementById("sheets_username").value);
+
 
     /*const githubUrl = document.getElementById("github_url").value; // Obtener el valor de la URL de GitHub
     const orgsName= getNameGithub(githubUrl); // Pasar el valor de la URL de GitHub a la función getNameGithub
@@ -238,25 +258,11 @@ document.getElementById("afegir_student").addEventListener('click',function (eve
         .catch(error => {
             console.error('Error:', error);
             alert('Hubo un error al enviar el formulario');
-        });
-*/
-    fetch("http://localhost:8092/student", {
-        method: 'POST',
-        // No necesitas especificar 'mode: no-cors' al usar FormData
-        // No necesitas especificar Content-Type al usar FormData
-        body: formData
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Error sending form");
-        }
+        });*/
 
-    }).then(data => {
-        console.log(data);
-        alert('Formulario enviado exitosamente');
-    }).catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
-    });
+
+
+
 });
 
 function getNameGithub(url_g){
