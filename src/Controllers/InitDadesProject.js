@@ -29,16 +29,23 @@ document.getElementById("save-project").addEventListener('click',function (event
     formData.append('URL_taiga', url_taiga);
     formData.append('URL_sheets', url_sheets);
 
-    console.log(formData);
+    var data = {
+        name: name,
+        subject: selectedOptionValue,
+        urlGithub: URLgithub,
+        urlTaiga: url_taiga,
+        urlSheets: url_sheets
+    };
 
     if(correct_github && correct_taiga) {
-        for (const pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
+
 
         fetch("http://localhost:8092/projects", {
             method: 'POST',
-            body: formData
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify(data)
         }).then(response => {
             console.log(response)
             if (!response.ok) {

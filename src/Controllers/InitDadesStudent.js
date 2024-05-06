@@ -64,7 +64,7 @@ function getValidationT(){
 
 
 
-            console.log('Miembros:', members);
+            //console.log('Miembros:', members);
         })
         .then(members => {
             console.log(members)

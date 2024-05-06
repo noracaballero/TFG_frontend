@@ -4,3 +4,9 @@
 .my-custom-navbar{
     background-color: #639BC1;
 }
+tr.row-green{
+    background-color: lightgreen;
+}
+tr.row-red{
+    background-color: lightcoral;
+}

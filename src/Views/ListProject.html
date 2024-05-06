@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>frontend</title>
     <script src="../Controllers/InitDadesProject.js"></script>
-    <script src="../Controllers/ListProject.js"></script>
+    <script  src="../Controllers/ListProject.js"></script>
     <link rel="stylesheet" href="../../public/bootstrap.min.css">
     <link rel="stylesheet" href="css/ListProject.css">
     <style>
@@ -15,7 +15,7 @@
         }
     </style>
 </head>
-<body onload="getProjects()">
+<body onload=" getSubjects();" >
     <nav class="navbar navbar-expand-lg my-custom-navbar" data-bs-theme="dark" id="">
         <div class="container-fluid" id="navbar">
             <a class="navbar-brand" href="#">Configuration</a>
@@ -24,6 +24,13 @@
             </button>
         </div>
     </nav>
+    <div>
+        <select id="select_subject"></select>
+        <label for="formFile" class="form-label mt-4">Import Projects</label>
+        <input class="form-control" type="file" id="formFile" accept=".xlsx">
+        <button id="import_projects" type="button" class="btn btn-primary" onclick="import_p()">AA</button>
+    </div>
+
     <h1>Teams</h1>
     <button id="openNewPageButton" type="button"  class="btn btn-primary">
         <a href="InitDadesProject.html">Add team</a>

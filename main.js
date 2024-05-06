@@ -1,49 +1,42 @@
 const { app, BrowserWindow , Menu,MenuItem} = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
+const { ipcMain } = require('electron');
+const { ipcRenderer, remote } = require('electron');
+const fs = require('fs');
+const XLSX = require('xlsx');
 
 let backendProcess;
 
 
+
+
 app.on('ready', () => {
-    // Ruta al archivo de tu aplicación Java
-    /*const javaFilePath = 'C:\\Users\\norac\\Desktop\\automation\\build\\libs\\automation-0.0.1-SNAPSHOT.jar';
 
-    // Construye la ruta al directorio de la aplicación Java
-    const javaDirectory = path.dirname(javaFilePath);
-
-    // Construye el comando para ejecutar la aplicación Java
-    const javaCommand = 'java';
-    const javaArgs = ['-jar', javaFilePath];
-
-    // Iniciar el proceso del backend
-    backendProcess = spawn(javaCommand, javaArgs);
-
-    backendProcess.stdout.on('data', (data) => {
-        console.log(`Backend stdout: ${data}`);
-    });
-
-    backendProcess.stderr.on('data', (data) => {
-        console.error(`Backend stderr: ${data}`);
-    });
-*/
-    // Crear la ventana principal de tu aplicación Electron
     createWindow();
+
 });
 
-/*app.on('will-quit', () => {
-    // Detener el proceso del backend cuando la aplicación se cierra
-    if (backendProcess) {
-        backendProcess.kill();
-    }
-});*/
 
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
-        height: 600
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false// Add this line
+        }
     });
-    win.loadFile('src/Views/InitSession.html');
+    win.loadFile('src/Views/ListProject.html');
+   /* window.ipcRenderer = ipcRenderer;
+    window.XLSX = remote.require('xlsx');
+    ipcMain.on('fileSelected', (event, filePath) => {
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        win.webContents.send('fileData', jsonData);
+    });*/
+
 
     /*win.on('closed', () => {
         // Detener el proceso del backend cuando la ventana se cierre
