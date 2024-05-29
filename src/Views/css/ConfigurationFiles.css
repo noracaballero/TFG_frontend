@@ -1,0 +1,52 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+}
+
+.tab-content {
+    text-align: left;
+    width: 100%;
+}
+
+p {
+    /*margin: 0;*/
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+.titulo {
+    /*font-weight: bold;*/
+    margin-top:0;
+    padding-bottom: 50px;
+    font-size: 24px; /* Ajusta este valor según tus necesidades */
+    line-height: 1.5; /* Aumenta la altura de la línea para darle más espacio */
+}
+.contenido {
+    /*font-weight: bold;*/
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.comando{
+    padding-bottom: 100px;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#button{
+    margin-top:75px;
+}

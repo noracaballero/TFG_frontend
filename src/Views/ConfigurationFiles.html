@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script  src="../Controllers/ConfigurationFiles.js"></script>
+  <link rel="stylesheet" href="css/ConfigurationFiles.css">
+  <link rel="stylesheet" href="../../public/bootstrap.min.css">
+  <style>
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body onload="setUp();">
+    <div class="container">
+        <input type="text" id="patata">
+        <div class="tab-content">
+          <p class="titulo">El seguent pas es arrencar els contenidors manualment:</p>
+          <p>1. L’ordre per encendre els connectors és Taiga → Github → Sheets.</p>
+          <p class="commando"><strong>docker-compose up -d qrconnect_[taiga/github/sheets]_[pes/asw/amep]</strong>.</p>
+          <p>2. Per veure si els connectors s'executen bé cal inspeccionar els seus logs.</p>
+          <p class="commando"><strong>docker logs -f [container id]</strong>.</p>
+          <p>3.Encendre el contenidor qreval</p>
+          <p class="commando"><strong>docker-compose up -d qreval</strong>.</p>
+
+        </div>
+      <div class="button-container">
+        <button type="button" class="btn btn-success" id="button" onclick="openConfiguration();">
+          Next
+        </button>
+      </div>
+        <div id="numero-container"></div>
+
+    </div>
+
+
+
+
+</body>
+</html>

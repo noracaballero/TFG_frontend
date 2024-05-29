@@ -10,3 +10,6 @@ tr.row-green{
 tr.row-red{
     background-color: lightcoral;
 }
+.checkbox{
+    transform: scale(1.5);
+}

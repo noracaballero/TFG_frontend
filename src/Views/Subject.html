@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subjects</title>
+    <script  src="../Controllers/Subject.js"></script>
+    <link rel="stylesheet" href="../../public/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-custom {
+            background-color: #639BC1;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link,
+        .navbar-custom .dropdown-item {
+            color: #fff;
+        }
+        .navbar-custom .dropdown-item:hover {
+            background-color: #557A9B;
+        }
+        .btn-custom {
+            background-color: #639BC1;
+            color: #fff;
+        }
+        .btn-custom:hover {
+            background-color: #557A9B;
+        }
+    </style>
+</head>
+<body onload="getSubjects()" >
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Configuration</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item ">
+                    <a class="nav-link" href="#" role="button" aria-haspopup="true" aria-expanded="false">Subjects</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Subjects</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Github</th>
+                        <th>Token Github</th>
+                        <th>Taiga</th>
+                        <th>Sheets</th>
+                    </tr>
+                    </thead>
+                    <tbody id="subject_table_body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h2>Add Subject</h2>
+    <form id="subject-form" >
+        <input type="hidden" id="externalid">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label for="github" class="form-label">Github</label>
+                <input type="checkbox" id="github" class="form-check-input">
+            </div>
+            <div class="col-md-4">
+                <label for="token_github" class="form-label">Token Github</label>
+                <input type="text" id="token_github" class="form-control">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="taiga" class="form-label">Taiga</label>
+                <input type="checkbox" id="taiga" class="form-check-input">
+            </div>
+            <div class="col-md-4">
+                <label for="sheets" class="form-label">Sheets</label>
+                <input type="checkbox" id="sheets" class="form-check-input">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-custom" onclick="afegirSubject()">Save</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadSubjects();
+
+        document.getElementById('subject-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            saveSubject();
+        });
+    });
+
+
+</script>
+</body>
+</html>

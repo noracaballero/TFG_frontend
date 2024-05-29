@@ -52,6 +52,7 @@ function getValidationT(){
 
             data.members.forEach(member =>{
                 let ismember = document.getElementById("taiga_username").value;
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 if(member.username === ismember){
                     inputTaiga.classList.remove('is-invalid')
                     inputTaiga.classList.add('is-valid');
