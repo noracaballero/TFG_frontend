@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iterations</title>
+  <link rel="stylesheet" href="../../public/bootstrap.min.css">
+  <script  src="../Controllers/Iteration.js"></script>
+</head>
+<body onload="getIterations();">
+<div class="container mt-4">
+  <h1 id="subject-title"></h1>
+
+  <h2>Iterations</h2>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-dark">
+      <tr>
+        <th>Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+      </tr>
+      </thead>
+      <tbody id="it_table_body">
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Add Iteration</h2>
+  <form id="iteration-form">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="iteration-name" class="form-label">Name</label>
+        <input type="text" id="iteration-name" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label for="start-date" class="form-label">Start Date</label>
+        <input type="date" id="start-date" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label for="end-date" class="form-label">End Date</label>
+        <input type="date" id="end-date" class="form-control" required>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="afegirIteration()">Save</button>
+  </form>
+</div>
+</body>
+</html>

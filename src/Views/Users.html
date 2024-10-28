@@ -4,26 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="../Controllers/Users.js"></script>
+  <link rel="stylesheet" href="../../public/bootstrap.min.css">
   <title>Users Table</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #fff; /* Cambiado a blanco */
       display: flex;
       justify-content: center;
-      align-items: center;
+
       height: 100vh;
       margin: 0;
     }
-    .table-container {
+    .container {
       background-color: #fff;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 20px; /* Añadido margen superior */
     }
     table {
       width: 100%;
-      border-collapse: collapse;
     }
     th, td {
       padding: 12px;
@@ -31,17 +30,20 @@
       border-bottom: 1px solid #ddd;
     }
     th {
-      background-color: #4CAF50;
+      background-color: #639BC1;
       color: white;
     }
-    tr:hover {
-      background-color: #f1f1f1;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
     }
   </style>
 </head>
-<body onload="getUsers();">
-<div class="table-container">
-  <input type="hidden" id="patata">
+<body onload="setUp();getUsers(); finish();">
+<div class="container">
+  <input type="hidden" id="info">
   <h2>Users</h2>
   <table>
     <thead>
@@ -53,6 +55,7 @@
     <tbody id="table_body">
     </tbody>
   </table>
+  <button type="button" class="btn btn-success mt-3" onclick="closeWindow();">Finish</button>
 </div>
 </body>
 </html>

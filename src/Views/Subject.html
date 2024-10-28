@@ -5,6 +5,7 @@
     <title>Subjects</title>
     <script  src="../Controllers/Subject.js"></script>
     <link rel="stylesheet" href="../../public/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -27,12 +28,17 @@
         .btn-custom:hover {
             background-color: #557A9B;
         }
+        .custom-button{
+            color:white;
+        }
     </style>
 </head>
 <body onload="getSubjects()" >
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Configuration</a>
+        <button onclick="getBAck()" class="btn custom-button" >
+            <i class="bi bi-arrow-left"></i>
+        </button>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -60,6 +66,7 @@
                         <th>Token Github</th>
                         <th>Taiga</th>
                         <th>Sheets</th>
+                        <th>Username</th>
                     </tr>
                     </thead>
                     <tbody id="subject_table_body">
@@ -95,23 +102,16 @@
                 <label for="sheets" class="form-label">Sheets</label>
                 <input type="checkbox" id="sheets" class="form-check-input">
             </div>
+            <div class="col-md-4">
+                <label for="sheets" class="form-label">Username</label>
+                <input type="text" id="username" class="form-control">
+            </div>
         </div>
         <button type="submit" class="btn btn-custom" onclick="afegirSubject()">Save</button>
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        loadSubjects();
 
-        document.getElementById('subject-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            saveSubject();
-        });
-    });
-
-
-</script>
 </body>
 </html>

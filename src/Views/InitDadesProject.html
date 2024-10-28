@@ -7,9 +7,9 @@
     <script src="../Controllers/InitDadesProject.js" defer></script>
     <script src="../Controllers/InitDadesStudent.js" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="stylesheet" href="css/InitDadesProject.css">
+    <link rel="stylesheet" href="css/InitDadesProject.css">
 </head>
-<body>
+<body onload="getSubjects()">
     <nav class="navbar navbar-expand-lg my-custom-navbar" data-bs-theme="dark" id="">
         <div class="container-fluid" id="navbar">
             <button onclick="getBAck()" class="btn custom-button" >
@@ -26,8 +26,6 @@
             <input type="text" id="name" class="form-control" placeholder="Project name">
         </div>
         <select class="form-select mb-3" id="subject">
-            <option value="asw">asw</option>
-            <option value="amep">amep</option>
         </select>
         <div class="form-group mb-3">
             <input type="url" id="github_url" class="form-control" placeholder="URL Github">

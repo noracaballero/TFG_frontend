@@ -1,14 +1,23 @@
+
 function patata(){
     const configData = window.opener.name;
 
     if (configData) {
         const configs = JSON.parse(configData);
-        console.log(configs); // Usar los datos como necesites
+        console.log(configs);
 
-        // Asignar los datos a un elemento oculto si es necesario
         document.getElementById("patata").value = configData;
     }
+}
+function openUsers(){
+    configs = document.getElementById("patata").value;
+    window.name = JSON.stringify(configs);
+    console.log(configs);
+    const windowProject = window.open("Users.html","_blank");
 
+}
+function getBAck(){
+    window.history.back();
 }
 
 function metrics(){
@@ -17,62 +26,93 @@ function metrics(){
     projects = JSON.parse(projects)
     console.log("AQUEST");
     console.log(projects);
-    fetch("http://localhost:8092/metrics",{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: projects
-    }).then(response => {
-        if(!response.ok) {
-            throw new Error("Error sending form");
-        }
-        console.log("done");
-        update(25);
-        return response.json();
-    })
 
-    fetch("http://localhost:8092/factors",{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: projects
+    fetch("http://"+process.env.SERVER+":8092/config/imports",{
+        method: 'GET',
     }).then(response => {
         if(!response.ok) {
             throw new Error("Error sending form");
         }
-        update(50);
-        return response.json();
-    })
-    fetch("http://localhost:8092/strategic",{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: projects
-    }).then(response => {
-        if(!response.ok) {
-            throw new Error("Error sending form");
-        }
-        update(75);
-        return response.json();
-    })
-    fetch("http://localhost:8092/users",{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: projects
-    }).then(response => {
-        if(!response.ok) {
-            throw new Error("Error sending form");
-        }
-        update(100);
-        return response.text();
+        fetch("http://"+process.env.SERVER+":8092/metrics",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: projects
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error("Error sending form");
+            }
+            console.log("done");
+            update(20);
+            //return response.json();
+            fetch("http://"+process.env.SERVER+":8092/factors",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: projects
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error("Error sending form");
+                }
+                update(40);
+                //return response.json();
+                fetch("http://"+process.env.SERVER+":8092/strategic",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: projects
+                }).then(response => {
+                    if(!response.ok) {
+                        throw new Error("Error sending form");
+                    }
+                    update(60);
+                    //return response.json();
+                    fetch("http://"+process.env.SERVER+":8092/students/LD",{
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: projects
+                    }).then(response => {
+                        if(!response.ok) {
+                            throw new Error("Error sending form");
+                        }
+                        update(80);
+                            fetch("http://"+process.env.SERVER+":8092/users",{
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: projects
+                            }).then(response => {
+                                if(!response.ok) {
+                                    throw new Error("Error sending form");
+                                }
+                                update(100);
+                                return response.text();
 
-    }).then(data =>{
-        console.log(data);
+                            }).then(data =>{
+                                console.log(data);
+                            })
+
+                    })
+                })
+            })
+        })
+    })
+}
+function imports(){
+
+    fetch("http://"+process.env.SERVER+":8092/config/imports",{
+        method: 'GET',
+    }).then(response => {
+        if(!response.ok) {
+            throw new Error("Error sending form");
+        }
+        return response.json();
     })
 }
 

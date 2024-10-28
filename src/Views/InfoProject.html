@@ -22,30 +22,25 @@
         <div class="form-group mb-3" style="display: flex">
             <input type="url" id="github_url" class="form-control" placeholder="URL Github">
             <div id="invalid-feedback-div-git" class="invalid-feedback-git" style="display: none;">Admin user not present in organization</div>
-            <button  class="btn custom-button" style="background-color: #1f80a8">
-                <i class="bi bi-floppy-fill" style="color: white"></i>
-            </button>
+
         </div>
         <div class="form-group mb-3" style="display: flex">
             <input type="url" id="url_taiga" class="form-control"  placeholder="URL Taiga" aria-describedby="button-addon2">
             <div id="invalid-feedback-div" class="invalid-feedback" style="display: none;">Taiga Project is private</div>
-            <button  class="btn custom-button" style="background-color: #1f80a8">
-                <i class="bi bi-floppy-fill" style="color: white"></i>
-            </button>
         </div>
         <div class="form-group mb-3" style="display: flex">
             <input type="url" id="url_sheets" class="form-control" placeholder="URL Sheets">
-            <button  class="btn custom-button" style="background-color: #1f80a8">
-                <i class="bi bi-floppy-fill" style="color: white"></i>
-            </button>
         </div>
-
-        <button id="save-project" type="button"  class="btn custom-button">
-            <span id="inside_button">Save Project</span>
+        <button  class="btn custom-button" >
+            <i class="bi bi-floppy-fill" style="color: white"></i>
+        </button>
+        <button id="save-project" type="button"  class="btn custom-button" style="background-color: #1f80a8" onclick="updateProject();">
+            <span id="inside_button" style="color: white">Save Project</span>
         </button>
         <table class="table">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Github Username</th>
                 <th>Taiga Username</th>

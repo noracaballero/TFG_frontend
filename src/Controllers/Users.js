@@ -1,18 +1,38 @@
-function patata(){
+let rootwindow = window.opener;
+window.onbeforeunload = function() {
+    if (rootwindow && !rootwindow.closed) {
+        rootwindow.close();
+    }
+};
+function setUp(){
     const configData = window.opener.name;
 
     if (configData) {
         const configs = JSON.parse(configData);
-        console.log(configs); // Usar los datos como necesites
+        console.log(configs);
 
-        // Asignar los datos a un elemento oculto si es necesario
-        document.getElementById("patata").value = configData;
+        document.getElementById("info").value = configData;
     }
 
 }
 
 function getUsers(){
-    const url=new URL("http://localhost:8092/users");
+    var projects = document.getElementById("info").value;
+    console.log(projects);
+    projects = JSON.parse(projects)
+    console.log(projects);
+
+    if (typeof projects === 'string' && projects.startsWith('[') && projects.endsWith(']')) {
+
+        projects = projects.substring(1, projects.length - 1);
+
+        projects = projects.split(',').map(p => p.trim());
+    }
+    let query = projects.map(p => `projects=${encodeURIComponent(p)}`).join('&');
+
+    let url = `http://'+process.env.SERVER+':8092/users?${query}`;
+    url = url.replace(/%22/g, '');
+    console.log(url.toString());
 
 
     fetch(url,{
@@ -25,7 +45,6 @@ function getUsers(){
     }).then(data =>{
         console.log(data);
         const name = data.name;
-        console.log("AAAAAAAAAAAA "+name);
 
         const tableBody = document.getElementById('table_body');
         tableBody.innerHTML = '';
@@ -39,4 +58,29 @@ function getUsers(){
             tableBody.appendChild(tr);
         })
     })
+}
+
+function finish(){
+    var projects = document.getElementById("info").value;
+    console.log(projects);
+    projects = JSON.parse(projects)
+    fetch("http://"+process.env.SERVER+":8092/config/finsih",{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: projects
+    }).then(response => {
+        if(!response.ok) {
+            throw new Error("Error sending form");
+        }
+        return response.text();
+
+    }).then(data =>{
+        console.log(data);
+    })
+}
+
+function closeWindow(){
+    window.close();
 }

@@ -1,11 +1,12 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
 let configs = [];
+let sub_config
 function getSubjects(){
     const selected_subject = document.getElementById("select_subject")
-    console.log(selected_subject);
 
-    fetch("http://localhost:8092/subject",{
+
+    fetch("http://"+process.env.SERVER+":8092/subject",{
         method: 'GET',
     }).then(response => {
         if(!response.ok) {
@@ -13,9 +14,9 @@ function getSubjects(){
         }
         return response.json();
     }).then(data =>{
-        console.log(data);
+        //console.log(data);
         const name = data.name;
-        console.log("AAAAAAAAAAAA "+name);
+
 
         data.forEach(function(element) {
             console.log(element.name)
@@ -27,7 +28,7 @@ function getSubjects(){
 }
 function getProjects(){
 
-    const url = new URL("http://localhost:8092/projects");
+    const url = new URL("http://"+process.env.SERVER+":8092/projects");
     console.log(url)
 
     fetch(url, {
@@ -54,6 +55,11 @@ function getProjects(){
             let students_taiga =[];
             //console.log(key)
             if (jsonData.hasOwnProperty(key)) {
+
+                if(jsonData[key]["config"]){
+                    table_body.innerHTML += "<tr style='--bs-table-bg: #D3d3d3' class='row-green' name='" + jsonData[key]["name"] + "' subject='" + jsonData[key]["subject"] + "' ><td><input type='checkbox' class='checkbox' disabled></td><td>" + jsonData[key]["name"] + "</td><td>" + jsonData[key]["subject"] + "</td></tr>";
+                }
+                else{
                 let github_correct = false;
                 let taiga_correct = false;
                 const orgsName = getNameGithub(jsonData[key]["urlGithub"]);
@@ -66,11 +72,11 @@ function getProjects(){
                 if (projectsIndex !== -1 && projectsIndex + 1 < parts.length) {
                     const projectID = parts[projectsIndex + 1];
                     id_project=projectID;
-                    console.log('ID del proyecto:', projectID);
+                    console.log('ID project:', projectID);
                 } else {
-                    console.log('No se pudo extraer el ID del proyecto');
+                    console.log('Error getting ID project');
                 }
-                const url_s = new URL("http://localhost:8092/students/project");
+                const url_s = new URL("http://"+process.env.SERVER+":8092/students/project");
                 var name = jsonData[key]["name"];
                 var subject = jsonData[key]["subject"];
                 url_s.searchParams.append('name',name);
@@ -96,20 +102,16 @@ function getProjects(){
                             students_git.push(jsonData[key]["username_github"]);
                             students_taiga.push(jsonData[key]["username_taiga"]);
                         }
-
-
-
-
                     }
 
                 }).catch(error => {
                     console.error('Error:', error);
-                    alert('Hubo un error al enviar el formulario');
+                    alert('Error sending form');
                 });
 
-                const url=new URL("http://localhost:8092/subject/token");
+                const url=new URL("http://"+process.env.SERVER+":8092/subject/token");
                 url.searchParams.append('name',jsonData[key]["subject"]);
-                //console.log(url);
+
                 fetch(url, {
                     method: 'GET',
                 })
@@ -118,7 +120,6 @@ function getProjects(){
 
                             throw new Error("Error sending form");
                         }
-                        // Devolver la promesa de response.text() para manejarla en el siguiente then
                         return response.text();
                     })
                     .then(token => {
@@ -132,7 +133,6 @@ function getProjects(){
                             .then(async response => {
                                 if (response.status === 404) {
                                     github_correct=false;
-                                    //table_body.innerHTML += "<tr style='--bs-table-bg: #f98888'  subject='" + jsonData[key]["subject"] + "' ><td name='" + jsonData[key]["name"] + "'><input type='checkbox' checked></td><td>" + jsonData[key]["name"] + "</td><td>" + jsonData[key]["subject"] + "</td></tr>";
                                 }
                                 if (!response.ok) {
                                 }
@@ -141,7 +141,7 @@ function getProjects(){
                             .then(data => {
 
                                 if (Array.isArray(data) && data.length === 0) {
-                                    //console.log('La respuesta está vacía');
+
                                     github_correct=false;
                                 } else {
 
@@ -150,38 +150,34 @@ function getProjects(){
                                     let exists = existsUsername(students_git, data);
                                     if(!exists) github_correct=false;
                                     else github_correct=true;
-                                    //console.log('La respuesta no está vacía');
+
 
                                 }
                                 const url_taig=new URL("https://api.taiga.io/api/v1/projects/by_slug");
                                 url_taig.searchParams.append('slug',id_project);
-                                console.log(url_taig);
+                                //console.log(url_taig);
 
                                 fetch(url_taig, {
                                     method: 'GET',
                                 })
                                     .then(response => {
                                         if (response.ok) {
-                                            /*label.classList.remove('is-invalid');
-                                            label.classList.add('is-valid');
-                                            messagetaiga.style.display = 'none';*/
+
                                             taiga_correct=true;
-                                            //return true;
+
 
                                         } else if (response.status === 401) {
-                                            /*label.classList.add('is-invalid');
-                                            messagetaiga.style.display = 'block';*/
+
                                             taiga_correct=false;
-                                            //return false;
+
                                         }
-                                        console.log(github_correct);
-                                        console.log(taiga_correct);
+
                                         if(github_correct && taiga_correct){
-                                            console.log("VERDEEEE");
+
                                             table_body.innerHTML += "<tr style='--bs-table-bg: #c6e6b8' class='row-green' name='" + jsonData[key]["name"] + "' subject='" + jsonData[key]["subject"] + "' ><td><input type='checkbox' class='checkbox' checked></td><td>" + jsonData[key]["name"] + "</td><td>" + jsonData[key]["subject"] + "</td></tr>";
 
                                         }else{
-                                            console.log("ROJOOOO");
+
                                             table_body.innerHTML += "<tr style='--bs-table-bg: #f98888' name='" + jsonData[key]["name"] + "' subject='" + jsonData[key]["subject"] + "' ><td><input type='checkbox' class='checkbox' ></td><td>" + jsonData[key]["name"] + "</td><td>" + jsonData[key]["subject"] + "</td></tr>";
 
                                         }
@@ -192,8 +188,6 @@ function getProjects(){
                                         taiga_correct=false;
 
                                     });
-                                console.log(github_correct);
-                                console.log(taiga_correct);
 
                             })
                             .catch(error => {
@@ -204,31 +198,29 @@ function getProjects(){
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Hubo un error al enviar el formulario');
+                        alert('Error sending form');
                     });
-                }
+                }}
         }
 
-        console.log(table_body)
+        //console.log(table_body)
         var rows = table.getElementsByTagName("tr");
         for (var i = 0; i < rows.length; ++i) {
             rows[i].addEventListener("click", function () {
                 const name = this.getAttribute("name");
-
-                console.log("holssss" + name);
                 const subject = this.getAttribute("subject");
                 openProjectWindow(name, subject);
             })
         }
         table.addEventListener("click",function (event){
-            console.log("adeuuuu");
+
             var target = event.target;
-            console.log(target.tagName)
+            //console.log(target.tagName)
             if(target.tagName==="TD"){
                 var row = target.closest("tr");
                 if (row) {
                     const name = row.getAttribute("name");
-                    console.log(name);
+                    //console.log(name);
                     const subject = row.getAttribute("subject");
                     openProjectWindow(name, subject);
                 }
@@ -238,7 +230,7 @@ function getProjects(){
 
     }).catch(error => {
         console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
+        alert('Error sending form');
     });
 }
 function renameKey(obj, oldKey, newKey){
@@ -249,11 +241,9 @@ function import_p(){
     const finalObject = {};
     var fileInput = document.getElementById("formFile");
     const selectedFile = fileInput.files[0];
-    console.log(selectedFile.name);
+    //console.log(selectedFile.name);
 
     const subject_value = document.getElementById("select_subject").value;
-
-
 
     const reader = new FileReader();
 
@@ -261,19 +251,19 @@ function import_p(){
         console.log("File successfully loaded!");
         const arraybuff = event.target.result;
         const data = new Uint8Array(arraybuff);
-        console.log(data);
+        //console.log(data);
 
         const workbook = XLSX.read(data,{type: 'array'});
-        console.log(workbook);
+        //console.log(workbook);
         const sheetName = workbook.SheetNames[0];
-        console.log(sheetName);
+        //console.log(sheetName);
         const worksheet = workbook.Sheets[sheetName];
-        console.log(worksheet);
+        //console.log(worksheet);
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         const info = jsonData.map(renameParameter);
         //console.log(info);
         const members = jsonData.map(extractMember1Params);
-        //console.log(member);
+        console.log(members);
 
         const jsonProject = info.map(obj => {
             return {...obj, subject: subject_value};
@@ -284,7 +274,7 @@ function import_p(){
         console.log(jsonProject);
         console.log(jsonStudent);
 
-        fetch("http://localhost:8092/projects", {
+        fetch("http://"+process.env.SERVER+":8092/projects", {
             method: 'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -295,8 +285,8 @@ function import_p(){
             if (!response.ok) {
                 throw new Error("Error sending form");
             }
-            alert('Formulario enviado exitosamente');
-            fetch("http://localhost:8092/students", {
+
+            fetch("http://"+process.env.SERVER+":8092/students", {
                 method: 'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -307,34 +297,29 @@ function import_p(){
                 if (!response.ok) {
                     throw new Error("Error sending form");
                 }
-                alert('Formulario enviado exitosamente');
+
+                window.location.reload();
 
             }).catch(error => {
                 console.error('Error:', error);
-                alert('Hubo un error al enviar el formulario');
+                alert('Error sending form');
             });
         }).catch(error => {
             console.error('Error:', error);
-            alert('Hubo un error al enviar el formulario');
+            alert('Error sending form');
         });
-        //getProjects();
-
-
 
         const project = jsonData.map(infoProject);
 
-
-        //console.log(jsonData);
     }
-
     reader.readAsArrayBuffer(selectedFile);
 
 }//);
 
 function existsUsername(usernames,json){
-    console.log("AAAAA")
+
     for (let name in usernames){
-        console.log(usernames[name])
+        //console.log(usernames[name])
         let found = false;
         for(let key in json){
             console.log(json[key].login);
@@ -352,17 +337,17 @@ function existsUsername(usernames,json){
 }
 
 document.addEventListener("DOMContentLoaded",function (){
-    console.log("Holaaa");
+
     getProjects();
     const table = document.getElementById("taula_body");
-    console.log(table)
+    //console.log(table)
     table.addEventListener("click",function (event){
-        console.log("adeuuuu");
+
         var target = event.target;
         if(target.tagName==="tr"){
-            console.log(target.dataset.name)
+           // console.log(target.dataset.name)
             const name = this.getAttribute("name");
-            console.log(name);
+            //console.log(name);
             const subject = this.getAttribute("subject");
             openProjectWindow(name,subject);
         }
@@ -382,15 +367,17 @@ function openProjectWindow(name,subject){
 function openConfiguration(){
     window.name = JSON.stringify(configs);
     const windowProject = window.open("ConfigurationFiles.html","_blank");
-    /*windowProject.onload = function() {
-        windowProject.document.getElementById("patata").value =configs ;
-    };*/
+    windowProject.onload = function() {
+        windowProject.document.getElementById("subject").value = sub_config;
+    };
+
+
 }
 
 function infoProject(obj){
     const info= {};
     for(const key in obj){
-        if(key.startsWith('Identificador') || key.startsWith('URL del projecte Taiga')|| key.startsWith('URL de la vostra organització a GitHub')){
+        if(key.startsWith('Identificador') || key.startsWith('URL del projecte Taiga')|| key.startsWith('URL de la vostra organització a GitHub') || key.startsWith('URL fitxer Sheets')){
             info[key]=obj[key];
         }
     }
@@ -456,7 +443,7 @@ function configurateProject(){
 
     var table = document.getElementById("table_proj");
     var rows = table.getElementsByTagName("tr");
-    const url=new URL("http://localhost:8092/config");
+    const url=new URL("http://"+process.env.SERVER+":8092/config");
     var projects_id = [];
 
     for(var i =1; i < rows.length; ++i){
@@ -472,17 +459,17 @@ function configurateProject(){
                 subject: element[2].innerText
             };
             projects_id.push(project);
+            sub_config = element[2].innerText;
 
         }
-        console.log("SSSS"+element[0].innerText);
+
     }
     var json = JSON.stringify(projects_id);
-    console.log(json);
-    configs = projects_id.map(project => project.name);
-    console.log(configs);
-    openConfiguration();
 
-    /*fetch(url, {
+    configs = projects_id.map(project => project.name);
+
+
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json' // Asegúrate de indicar que el cuerpo de la solicitud es JSON
@@ -493,26 +480,26 @@ function configurateProject(){
         if (!response.ok) {
             throw new Error("Error sending form");
         }
-        console.log("WWWWW"+response)
+
         return response.json();
     }).then(data => {
         configs = data;
         openConfiguration();
         console.log(data);
         const name = data.name;
-        console.log("AAAAAAAAAAAA "+name);
+
 
         data.forEach(function(element) {
             console.log(element.name)
-            //const option = document.createElement("option")
-            //option.text=element.name;
-            //selected_subject.add(option);
+
         })
 
     }).catch(error => {
         console.error('Error:', error);
-        alert('Hubo un error al enviar los proyectos');
-    });*/
+        alert('Error sending form');
+    });
+
+
 }
 function getNameGithub(url_g){
     const projectLink = url_g;
@@ -525,73 +512,11 @@ function getNameGithub(url_g){
         console.log(parts[projectsIndex + 1]);
         return parts[projectsIndex + 1];
     } else {
-        console.log('No se pudo extraer el ID del proyecto');
+        console.log('Error getting ID project');
     }
 }
-//Validació github
-/*function  isValidGithub(url_git,subject){
 
-    const orgsName = getNameGithub(url_git);
-    console.log()
+function reupdate(){
+    window.location.reload();
+}
 
-    console.log("weweweweew"+url_git);
-
-    const label = document.getElementById('github_url');
-    const messagetaiga = document.getElementById('invalid-feedback-div-git');
-
-    const url=new URL("http://localhost:8092/subject/token");
-    url.searchParams.append('name',subject);
-    console.log(url);
-    fetch(url, {
-        method: 'GET',
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error sending form");
-            }
-            // Devolver la promesa de response.text() para manejarla en el siguiente then
-            return response.text();
-        })
-        .then(token => {
-            console.log(token);
-            fetch(`https://api.github.com/orgs/${orgsName}/members`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `token ${token}`
-                }
-            })
-                .then(async response => {
-                    if (response.status === 404) {
-                        return "false";
-                        //throw new Error('Error 404: Recurso no encontrado');
-                    }
-                    if (!response.ok) {
-
-                        //throw new Error('Error al obtener los datos de la membresía');
-                    }
-
-                    return await response.json();
-                })
-                .then(data => {
-
-                    if (Array.isArray(data) && data.length === 0) {
-                        console.log('La respuesta está vacía');
-                        return "false";
-
-                    } else {
-                        console.log('La respuesta no está vacía');
-                        return "true";
-
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    return "false";
-                });
-        })
-        .catch(error => {
-            return false;
-            console.error('Error:', error);
-            alert('Hubo un error al enviar el formulario');
-        });
-}*/

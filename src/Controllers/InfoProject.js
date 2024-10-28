@@ -1,13 +1,48 @@
 
+let members_github = [];
+let members_taiga = [];
 function update(name,subject){
+    window.location.reload();
     document.getElementById("name").value=name;
     document.getElementById("subject").value=subject;
 }
 
+function updateProject(){
+    const name = document.getElementById("name").value;
+    const sub = document.getElementById("subject").value;
+    document.getElementById("github_url").value
+    const updatedData = {
+        name:document.getElementById("name").value.trim(),
+        subject: document.getElementById("subject").value.trim(),
+        urlGithub: document.getElementById("github_url").value.trim(),
+        urlTaiga: document.getElementById("url_taiga").value.trim(),
+        urlSheets: document.getElementById("url_sheets").value.trim()
+    };
+
+    fetch("http://"+process.env.SERVER+":8092/projects/"+name, {
+        method: 'PUT',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    }).then(response => {
+        console.log(response)
+        if (!response.ok) {
+            throw new Error("Error sending form");
+        }
+        //update(name,sub);
+        window.close();
+
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error sending form');
+    });
+
+}
+
 function getInfoProject(){
-    const url = new URL("http://localhost:8092/projects/id");
-    console.log("patatattatata");
-    //console.log(document.getElementById("name").value);
+    const url = new URL("http://"+process.env.SERVER+":8092/projects/id");
+
 
     url.searchParams.append('name',document.getElementById("name").value);
     url.searchParams.append('subject',document.getElementById("subject").value)
@@ -19,28 +54,31 @@ function getInfoProject(){
             throw new Error("Error sending form");
         }
         return response.text()
-    }).then(data => {
+    }).then(async data => {
         const jsonData = JSON.parse(data);
         console.log(jsonData);
-        document.getElementById("github_url").value=jsonData["urlGithub"];
-        getValidationGithub(jsonData["urlGithub"]);
-        document.getElementById("url_taiga").value=jsonData["urlTaiga"];
-        getValidationTaiga(jsonData["urlTaiga"]);
-        document.getElementById("url_sheets").value=jsonData["urlSheets"];
+        document.getElementById("github_url").value = jsonData["urlGithub"];
+        document.getElementById("url_taiga").value = jsonData["urlTaiga"];
+        document.getElementById("url_sheets").value = jsonData["urlSheets"];
         console.log(jsonData["urlGithub"])
+
+        getValidationGithub(jsonData["urlGithub"]);
+        getValidationTaiga(jsonData["urlTaiga"]);
+
+
+
+
     }).catch(error => {
         console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
+        alert('Error sending form');
     });
-    console.log("eyyytuukyiy");
+
 
 }
 
 function getStudents(){
-    console.log("eyyytuukyiy");
-    const url = new URL("http://localhost:8092/students/project");
+    const url = new URL("http://"+process.env.SERVER+":8092/students/project");
     var name = document.getElementById("name").value;
-    console.log(name);
     var subject = document.getElementById("subject").value;
     url.searchParams.append('name',name);
     url.searchParams.append('subject',subject);
@@ -67,13 +105,12 @@ function getStudents(){
             if (jsonData.hasOwnProperty(key)) {
                 console.log(jsonData[key]);
             }
-                //table_body.innerHTML += "<tr><td>" + jsonData[key]["name"] + "</td><td>" + jsonData[key][""] + "</td></tr>";
 
             }
 
     }).catch(error => {
         console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
+        alert('Error sending the form');
     });
 
 }
@@ -100,9 +137,8 @@ function getValidationGithub(url_git){
 
     const label = document.getElementById('github_url');
     const messagetaiga = document.getElementById('invalid-feedback-div-git');
-    let members =[];
 
-    const url=new URL("http://localhost:8092/subject/token");
+    const url=new URL("http://"+process.env.SERVER+":8092/subject/token");
     url.searchParams.append('name',document.getElementById("subject").value);
     console.log(url);
     fetch(url, {
@@ -112,7 +148,6 @@ function getValidationGithub(url_git){
             if (!response.ok) {
                 throw new Error("Error sending form");
             }
-            // Devolver la promesa de response.text() para manejarla en el siguiente then
             return response.text();
         })
         .then(token => {
@@ -128,10 +163,9 @@ function getValidationGithub(url_git){
                         label.classList.add('is-invalid');
                         messagetaiga.style.display = 'block';
                         correct_github=false;
-                        //throw new Error('Error 404: Recurso no encontrado');
                     }
                     if (!response.ok) {
-                        throw new Error('Error al obtener los datos de la membresía');
+                        throw new Error('Error sending the form');
                     }
                     return response.json();
                 })
@@ -140,59 +174,20 @@ function getValidationGithub(url_git){
                         label.classList.add('is-invalid');
                         messagetaiga.style.display = 'block';
                         correct_github=false;
-                        console.log('La respuesta está vacía');
-                    } else {
 
+                    } else {
                         for(let key in data){
                             console.log(data[key]["login"]);
-                            members.push(data[key]["login"]);
+                            members_github.push(data[key]["login"]);
                         }
-                        console.log(members);
+                        console.log(members_github);
                         label.classList.remove('is-invalid');
                         label.classList.add('is-valid');
                         messagetaiga.style.display = 'none';
                         correct_github=true;
-                        console.log('La respuesta no está vacía');
+
                     }
-                    const url_s = new URL("http://localhost:8092/students/project");
-                    var name = document.getElementById("name").value;
-                    var subject = document.getElementById("subject").value;
-                    url_s.searchParams.append('name',name);
-                    url_s.searchParams.append('subject',subject);
 
-                    fetch(url_s,  {
-                        method:'GET',
-                    }).then(response =>{
-                        if (!response.ok) {
-                            throw new Error("Error sending form");
-                        }
-                        return response.text()
-                    }).then(dataS => {
-                        const jsonData = JSON.parse(dataS);
-                        console.log(jsonData);
-
-                        const table_body = document.getElementById("table_body");
-
-                        console.log(jsonData);
-                        const promises = [];
-
-                        for (const key in jsonData) {
-                            if (jsonData.hasOwnProperty(key)) {
-                                if (members.includes(jsonData[key]["username_github"])) {
-                                    console.log("correctooo");
-                                    table_body.innerHTML += "<tr><td contenteditable=\"true\">" + jsonData[key]["name"] + "</td><td style='--bs-table-bg: #c6e6b8' contenteditable=\"true\">" + jsonData[key]["username_github"] + "</td><td id='taiga_cell' contenteditable=\"true\">" + jsonData[key]["username_taiga"] + "</td><td contenteditable=\"true\">" + jsonData[key]["username_sheets"] + "</td></tr>";
-                                }
-                                else{
-                                    table_body.innerHTML += "<tr><td contenteditable=\"true\">" + jsonData[key]["name"] + "</td><td style='--bs-table-bg: #f98888' contenteditable=\"true\">" + jsonData[key]["username_github"] + "</td><td id='taiga_cell' contenteditable=\"true\">" + jsonData[key]["username_taiga"] + "</td><td contenteditable=\"true\">" + jsonData[key]["username_sheets"] + "</td></tr>";
-                                }
-                            //console.log(key)
-                            }
-                        }
-
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        alert('Hubo un error al enviar el formulario');
-                    });
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -200,8 +195,54 @@ function getValidationGithub(url_git){
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Hubo un error al enviar el formulario');
+            alert('Error sending form');
         });
+}
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('btn-warning')) {
+        event.preventDefault();
+        saveRowChanges(event.target.closest('tr'));
+    }
+});
+
+
+function saveRowChanges(row) {
+    const cells = row.querySelectorAll('td');
+    const updatedData = {
+        id:cells[0].textContent,
+        name: cells[1].textContent.trim(),
+        username_github: cells[2].textContent.trim(),
+        username_taiga: cells[3].textContent.trim(),
+        username_sheets: cells[4].textContent.trim()
+    };
+    if(members_github.includes(cells[2].textContent.trim())){
+        cells[2].style.backgroundColor = '#c6e6b8';
+    }
+
+    if(members_taiga.includes(cells[3].textContent.trim())){
+        cells[3].style.backgroundColor = '#c6e6b8';
+    }
+
+    console.log(updatedData);
+    fetch("http://"+process.env.SERVER+":8092/students/"+cells[0].textContent, {
+        method: 'PUT',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    }).then(response => {
+        console.log(response)
+        if (!response.ok) {
+            throw new Error("Error sending form");
+        }
+
+
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error sending form');
+    });
+
+
 }
 function getValidationTaiga(url_taig){
 
@@ -215,14 +256,14 @@ function getValidationTaiga(url_taig){
     if (projectsIndex !== -1 && projectsIndex + 1 < parts.length) {
         const projectID = parts[projectsIndex + 1];
         id_project=projectID;
-        console.log('ID del proyecto:', projectID);
+        console.log('ID project:', projectID);
     } else {
-        console.log('No se pudo extraer el ID del proyecto');
+        console.log('Error getting ID project');
     }
 
     const url=new URL("https://api.taiga.io/api/v1/projects/by_slug");
     url.searchParams.append('slug',id_project);
-    console.log(url);
+
 
     const label = document.getElementById('url_taiga');
     const messagetaiga = document.getElementById('invalid-feedback-div');
@@ -246,8 +287,8 @@ function getValidationTaiga(url_taig){
             }
         })
         .then(data =>{
-            console.log("1!!!!!!!!!!!!!!!");
-            console.log(data);
+
+
             if (Array.isArray(data) && data.length === 0) {
                 label.classList.add('is-invalid');
                 messagetaiga.style.display = 'block';
@@ -256,95 +297,88 @@ function getValidationTaiga(url_taig){
             } else {
                 data.members.forEach(member => {
                 members.push(member.username);
+                members_taiga.push(member.username);
                 });
-                /*for(let key in data){
-                    console.log("patataaa");
-                    console.log(data[key]);
-                    console.log(data[key]["members"]["username"]);
-                    members.push(data[key]["members"]["username"]);
-                }*/
-                console.log("AQUIIIIII");
+
                 console.log(members);
                 label.classList.remove('is-invalid');
                 label.classList.add('is-valid');
                 messagetaiga.style.display = 'none';
                 correct_taiga=true;
-                console.log('La respuesta no está vacía');
             }
+            updateTable();
 
-
-            const url_s = new URL("http://localhost:8092/students/project");
-            var name = document.getElementById("name").value;
-            var subject = document.getElementById("subject").value;
-            url_s.searchParams.append('name',name);
-            url_s.searchParams.append('subject',subject);
-
-            fetch(url_s,  {
-                method:'GET',
-            }).then(response =>{
-                if (!response.ok) {
-                    throw new Error("Error sending form");
-                }
-                return response.text()
-            }).then(dataS => {
-                const jsonData = JSON.parse(dataS);
-                console.log("TAIGAAAA"+jsonData);
-
-                let table_body = document.getElementById("table_body");
-
-// Recorrer cada fila del cuerpo de la tabla
-                for (let i = 0; i < table_body.rows.length; i++) {
-                    let row = table_body.rows[i];
-                    let cellTaiga = row.cells[2]; // La tercera columna es el índice 2
-
-                    // Obtener el valor de la celda de "username_taiga"
-                    let usernameTaiga = cellTaiga.textContent;
-                    for (const key in jsonData) {
-                        console.log("TAIGAAAAA"+key)
-                        if (jsonData.hasOwnProperty(key)) {
-                            console.log(jsonData[key]["username_taiga"]);
-                            if (members.includes(jsonData[key]["username_taiga"])) {
-                                console.log("correctooo");
-                                cellTaiga.style.backgroundColor = "#c6e6b8";
-                            }
-                            else if (!members.includes(jsonData[key]["username_taiga"])){
-                                cellTaiga.style.backgroundColor = "#f98888"; // Rojo claro
-                            }
-                            //console.log(key)
-                        }
-                    }
-                }
-
-                /*const table_body = document.getElementById("table_body");
-
-                console.log(jsonData);
-                const promises = [];
-
-                for (const key in jsonData) {
-                    if (jsonData.hasOwnProperty(key)) {
-                        if (members.includes(jsonData[key]["username_taiga"])) {
-                            console.log("correctooo");
-                            table_body.innerHTML += "<tr><td contenteditable=\"true\">" + jsonData[key]["name"] + "</td><td style='--bs-table-bg: #c6e6b8' contenteditable=\"true\">" + jsonData[key]["username_github"] + "</td><td id = contenteditable=\"true\">" + jsonData[key]["username_taiga"] + "</td><td contenteditable=\"true\">" + jsonData[key]["username_sheets"] + "</td></tr>";
-                        }
-                        else{
-                            table_body.innerHTML += "<tr><td contenteditable=\"true\">" + jsonData[key]["name"] + "</td><td style='--bs-table-bg: #f98888' contenteditable=\"true\">" + jsonData[key]["username_github"] + "</td><td contenteditable=\"true\">" + jsonData[key]["username_taiga"] + "</td><td contenteditable=\"true\">" + jsonData[key]["username_sheets"] + "</td></tr>";
-                        }
-                        //console.log(key)
-
-
-
-                    }
-                }*/
-
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('Hubo un error al enviar el formulario');
-            });
         })
         .catch(error => {
             console.error('Error:', error);
 
         });
 
-
 }
+
+function updateTable(){
+    const url_s = new URL("http://"+process.env.SERVER+":8092/students/project");
+    var name = document.getElementById("name").value;
+    var subject = document.getElementById("subject").value;
+    url_s.searchParams.append('name',name);
+    url_s.searchParams.append('subject',subject);
+
+    fetch(url_s,  {
+        method:'GET',
+    }).then(response =>{
+        if (!response.ok) {
+            throw new Error("Error sending form");
+        }
+        return response.text()
+    }).then(dataS => {
+        const jsonData = JSON.parse(dataS);
+
+        let table_body = document.getElementById("table_body");
+
+        for (const key in jsonData) {
+            if (jsonData.hasOwnProperty(key)) {
+                const tr = document.createElement('tr');
+
+                const username_g = jsonData[key]["username_github"].trim()
+                console.log(username_g);
+                console.log(members_github);
+                let github = false;
+                for(let i = 0; i< members_github.length; ++i){
+                    if(members_github[i].trim() === username_g) {
+                        github=true;
+                    }
+                }
+                const username_t = jsonData[key]["username_taiga"].trim()
+                console.log(username_t);
+                console.log(members_taiga);
+                let taiga = false
+                for(let  i= 0; i< members_taiga.length; ++i){
+                    if(members_taiga[i].trim() === username_t) { taiga=true;}
+                }
+
+                tr.innerHTML = `
+                                        <td>${jsonData[key]["id"]}</td>
+                                        <td contenteditable="true"> ${jsonData[key]["name"]}</td>
+                                        <td style="background-color: ${github ? '#c6e6b8' : '#f98888'}" contenteditable="true"> ${jsonData[key]["username_github"]}</td>
+                                        <td style="background-color: ${taiga ? '#c6e6b8' : '#f98888'}" contenteditable="true"> ${jsonData[key]["username_taiga"]} </td>
+                                        <td contenteditable="true"> ${jsonData[key]["username_sheets"]} </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" >Save</button>
+                                        </td>
+                                    `;
+
+                table_body.append(tr);
+            }
+        }
+
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error sending form');
+    });
+}
+
+window.addEventListener('beforeunload', function () {
+    if (window.opener && !window.opener.closed) {
+        window.opener.reupdate();
+    }
+});

@@ -5,6 +5,7 @@ const { ipcMain } = require('electron');
 const { ipcRenderer, remote } = require('electron');
 const fs = require('fs');
 const XLSX = require('xlsx');
+require('dotenv').config();
 
 let backendProcess;
 
@@ -17,32 +18,22 @@ app.on('ready', () => {
 
 });
 
-
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 800,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false// Add this line
         }
     });
     win.loadFile('src/Views/ListProject.html');
-   /* window.ipcRenderer = ipcRenderer;
-    window.XLSX = remote.require('xlsx');
-    ipcMain.on('fileSelected', (event, filePath) => {
-        const workbook = XLSX.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-        win.webContents.send('fileData', jsonData);
-    });*/
+    global.mainWindow = mainWindow;
 
-
-    /*win.on('closed', () => {
-        // Detener el proceso del backend cuando la ventana se cierre
-        if (backendProcess) {
-            backendProcess.kill();
+    ipcMain.on('reload-main-window', () => {
+        if (mainWindow) {
+            mainWindow.reload();
         }
-    });*/
+    });
 
 }
